@@ -1,29 +1,40 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: VPC with 1 Public and 1 Private Subnet in a single AZ with DNS options enabled
 
+# ======================
+# PARAMETERS SECTION
+# ======================
 Parameters:
 
+  # CIDR block for the main VPC
   VpcCidr:
     Type: String
     Default: 10.200.123.0/24
     Description: CIDR block for the VPC
 
+  # CIDR block for the public subnet
   PublicSubnetCidr:
     Type: String
     Default: 10.200.123.0/25
     Description: CIDR block for the public subnet
 
+  # CIDR block for the private subnet
   PrivateSubnetCidr:
     Type: String
     Default: 10.200.123.128/25
     Description: CIDR block for the private subnet
 
+  # Availability Zone to launch subnets into
   AvailabilityZone:
     Type: String
     Description: Availability Zone to use for the subnets
 
+# ======================
+# RESOURCES SECTION
+# ======================
 Resources:
 
+  # Create VPC with DNS support and hostnames enabled
   MyVPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -34,6 +45,7 @@ Resources:
         - Key: Name
           Value: MyVPC
 
+  # Internet Gateway to allow public internet access
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
@@ -41,12 +53,14 @@ Resources:
         - Key: Name
           Value: MyIGW
 
+  # Attach the Internet Gateway to the VPC
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref MyVPC
       InternetGatewayId: !Ref InternetGateway
 
+  # Public subnet in the VPC with public IP mapping on launch
   PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
@@ -58,6 +72,7 @@ Resources:
         - Key: Name
           Value: PublicSubnet
 
+  # Private subnet in the VPC with no public IP mapping
   PrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
@@ -69,6 +84,7 @@ Resources:
         - Key: Name
           Value: PrivateSubnet
 
+  # Create a Route Table for the public subnet
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -77,6 +93,7 @@ Resources:
         - Key: Name
           Value: PublicRouteTable
 
+  # Add a default route (0.0.0.0/0) to the public internet
   PublicRoute:
     Type: AWS::EC2::Route
     DependsOn: AttachGateway
@@ -85,22 +102,29 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
 
+  # Associate the public subnet with the public route table
   PublicSubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnet
       RouteTableId: !Ref PublicRouteTable
 
+# ======================
+# OUTPUTS SECTION
+# ======================
 Outputs:
 
+  # Output the VPC ID
   VPCId:
     Value: !Ref MyVPC
     Description: VPC ID
 
+  # Output the public subnet ID
   PublicSubnetId:
     Value: !Ref PublicSubnet
     Description: Public Subnet ID
 
+  # Output the private subnet ID
   PrivateSubnetId:
     Value: !Ref PrivateSubnet
     Description: Private Subnet ID

@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: |
+  This template creates an EC2 instance with a Windows Server image and installs the AWS Systems Manager Agent (SSM Agent) on it.
+Parameters:
+  MyIP:
+    Type: String
+    Description: IP allowded for SSH/RDP access (10.200.123.1/24)
+
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.200.123.0/24
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-VPC
+  
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-IGW
+
+  Attachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref InternetGateway
+  
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.200.123.0/26
+      AvailabilityZone: us-west-2a
+      MapPublicIpOnLaunch: true
+      Tags:
+          - Key: Name
+            Value: Net-Bootcamp-Public-Subnet
+
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.200.123.64/26
+      AvailabilityZone: us-west-2a
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Private-Subnet
+  
+  PublieRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Public-Route-Table
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublieRouteTable
+      DestinationCidrBlock: 0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicRouteTableAssoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublieRouteTable
+
+  EC2KeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: Net-Bootcamp-Window-server-KeyPair
+      KeyType: rsa
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Window-server-KeyPair
+  
+  InstanceSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH and RDP access
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref MyIP
+        - IpProtocol: tcp
+          FromPort: 3389
+          ToPort: 3389
+          CidrIp: !Ref MyIP
+        - IpProtocol: -1
+          CidrIp: 10.200.123.0/24
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Window-server-SG
+  WindowInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.large
+      ImageId: ami-0c55b159cbfafe1f0 # Replace with the latest Windows Server AMI ID for your region
+      KeyName: !Ref EC2KeyPair
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref InstanceSG
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 125
+            VolumeType: gp3
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Window-server-Instance
+
+Output:
+  VpcId:
+    Description: The VPC ID
+    Value: !Ref MyVPC
+  
+  PublicSubnetId:
+    Description: The Public Subnet ID
+    Value: !Ref PublicSubnet
+  
+  PrivateSubnetId:
+    Description: The Private Subnet ID
+    Value: !Ref PrivateSubnet
+  
+  InstanceId:
+    Description: The EC2 Instance ID
+    Value: !Ref WindowInstance
+  
+  KeyPairName:
+    Description: The Key Pair Name
+    Value: !Ref EC2KeyPair

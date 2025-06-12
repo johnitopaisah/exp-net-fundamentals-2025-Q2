@@ -1,0 +1,186 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: |
+  This template creates an EC2 instance with a Windows Server image,
+  provisions a VPC with public/private subnets, and attaches a secondary ENI in the private subnet.
+
+Parameters:
+  VpcCidr:
+    Type: String
+    Default: 10.200.123.0/24
+    Description: CIDR block for the VPC
+
+  PublicSubnetCidr:
+    Type: String
+    Default: 10.200.123.0/25
+    Description: CIDR block for the public subnet
+
+  PrivateSubnetCidr:
+    Type: String
+    Default: 10.200.123.128/25
+    Description: CIDR block for the private subnet
+
+  AvailabilityZone:
+    Type: String
+    Default: us-west-2a
+    Description: The Availability Zone to use for the subnets
+
+  MyIP:
+    Type: String
+    Default: 0.0.0.0/0  # Replace with your IP (e.g. 35.187.x.x/32) for secure access
+    Description: IP allowed for SSH/RDP access
+
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidr
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-VPC
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-IGW
+
+  AttachmentGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: !Ref PublicSubnetCidr
+      AvailabilityZone: !Ref AvailabilityZone
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Public-Subnet
+
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: !Ref PrivateSubnetCidr
+      MapPublicIpOnLaunch: false
+      AvailabilityZone: !Ref AvailabilityZone
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Private-Subnet
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Public-Route-Table
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachmentGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+  EC2KeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: Net-Bootcamp-Window-server-KeyPair
+      KeyType: rsa
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Window-server-KeyPair
+
+  InstanceSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH and RDP access
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref MyIP
+        - IpProtocol: tcp
+          FromPort: 3389
+          ToPort: 3389
+          CidrIp: !Ref MyIP
+        - IpProtocol: -1
+          CidrIp: !Ref VpcCidr
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Window-server-SG
+
+  WindowInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.large
+      ImageId: ami-077d884fe0477d60d  # Replace with latest Windows Server 2025 AMI if needed
+      KeyName: !Ref EC2KeyPair
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref InstanceSG
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 125
+            VolumeType: gp3
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Window-server-Instance
+
+  SecondaryENI:
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      SubnetId: !Ref PrivateSubnet
+      Description: Secondary ENI in private subnet
+      GroupSet:
+        - !Ref InstanceSG
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Secondary-ENI
+
+  ENIAttachment:
+    Type: AWS::EC2::NetworkInterfaceAttachment
+    DependsOn: WindowInstance
+    Properties:
+      InstanceId: !Ref WindowInstance
+      NetworkInterfaceId: !Ref SecondaryENI
+      DeviceIndex: 1
+
+Outputs:
+  VpcId:
+    Description: The VPC ID
+    Value: !Ref MyVPC
+
+  PublicSubnetId:
+    Description: The Public Subnet ID
+    Value: !Ref PublicSubnet
+
+  PrivateSubnetId:
+    Description: The Private Subnet ID
+    Value: !Ref PrivateSubnet
+
+  InstanceId:
+    Description: The EC2 Instance ID
+    Value: !Ref WindowInstance
+
+  KeyPairName:
+    Description: The Key Pair Name
+    Value: !Ref EC2KeyPair

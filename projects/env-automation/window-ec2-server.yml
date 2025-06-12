@@ -120,6 +120,24 @@ Resources:
       Tags:
         - Key: Name
           Value: Net-Bootcamp-Window-server-Instance
+  
+  SecondaryENI:
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      SubnetId: !Ref PrivateSubnet
+      Description: Secondary ENI for the all the resources in the private subnet
+      GroupSet:
+        - !Ref InstanceSG
+      Tags:
+        - Key: Name
+          Value: Net-Bootcamp-Window-server-Secondary-ENI
+  
+  ENIAttachment:
+    Type: AWS::EC2::NetworkInterfaceAttachment
+    Properties:
+      InstanceId: !Ref WindowInstance
+      NetworkInterfaceId: !Ref SecondaryENI
+      DeviceIndex: 1
 
 Output:
   VpcId:

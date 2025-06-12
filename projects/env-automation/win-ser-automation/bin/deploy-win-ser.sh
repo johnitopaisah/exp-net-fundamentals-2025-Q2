@@ -13,6 +13,7 @@ VPC_CIDR="10.200.123.0/24"
 PUBLIC_SUBNET_CIDR="10.200.123.0/25"
 PRIVATE_SUBNET_CIDR="10.200.123.128/25"
 AVAILABILITY_ZONE="us-west-2a"
+KEY_NAME="Net-Bootcamp-Window-server-KeyPair"
 
 # ========== DEPLOYMENT ==========
 echo "🚀 Deploying CloudFormation stack: $STACK_NAME in region: $REGION"
@@ -28,6 +29,7 @@ aws cloudformation deploy \
     PrivateSubnetCidr="$PRIVATE_SUBNET_CIDR" \
     AvailabilityZone="$AVAILABILITY_ZONE" \
     MyIP="$MY_IP" \
+    KeyPairName="$KEY_NAME" \
   --capabilities CAPABILITY_IAM \
   --no-fail-on-empty-changeset
 
@@ -46,4 +48,5 @@ fi
 
 # ========== POST DEPLOYMENT ==========
 echo "✅ Deployment completed. Your Windows server environment is now live."
-echo "🔗 You can connect to your Windows server using RDP with the following command:"
+echo "📢 You can now connect to your Windows instance using RDP."
+ 

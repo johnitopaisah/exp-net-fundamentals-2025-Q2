@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: |
-  This template creates an EC2 instance with a Windows Server image,
-  provisions a VPC with public/private subnets, and attaches a secondary ENI in the private subnet.
+  This template creates an EC2 Windows Server instance with a secondary ENI,
+  inside a VPC with public and private subnets.
 
 Parameters:
   VpcCidr:
@@ -26,8 +26,13 @@ Parameters:
 
   MyIP:
     Type: String
-    Default: 0.0.0.0/0  # Replace with your IP (e.g. 35.187.x.x/32) for secure access
+    Default: 0.0.0.0/0
     Description: IP allowed for SSH/RDP access
+
+  KeyPairName:
+    Type: String
+    Default: Net-Bootcamp-Window-server-KeyPair
+    Description: Name of the EC2 Key Pair to use for the instance
 
 Resources:
   MyVPC:
@@ -97,15 +102,6 @@ Resources:
       SubnetId: !Ref PublicSubnet
       RouteTableId: !Ref PublicRouteTable
 
-  EC2KeyPair:
-    Type: AWS::EC2::KeyPair
-    Properties:
-      KeyName: Net-Bootcamp-Window-server-KeyPair
-      KeyType: rsa
-      Tags:
-        - Key: Name
-          Value: Net-Bootcamp-Window-server-KeyPair
-
   InstanceSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -130,8 +126,8 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t3.large
-      ImageId: ami-077d884fe0477d60d  # Replace with latest Windows Server 2025 AMI if needed
-      KeyName: !Ref EC2KeyPair
+      ImageId: ami-077d884fe0477d60d  # Windows Server 2025 Base in us-west-2
+      KeyName: !Ref KeyPairName
       SubnetId: !Ref PublicSubnet
       SecurityGroupIds:
         - !Ref InstanceSG
@@ -183,4 +179,4 @@ Outputs:
 
   KeyPairName:
     Description: The Key Pair Name
-    Value: !Ref EC2KeyPair
+    Value: !Ref KeyPairName

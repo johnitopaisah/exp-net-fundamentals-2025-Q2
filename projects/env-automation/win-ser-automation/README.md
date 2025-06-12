@@ -74,3 +74,12 @@ Once the template (`window-ec2-server.yml`) has been validate, you can now move 
   ./bin/deploy.sh
 ```
 ⚠️  Please note that, you have to make this script executable by running this command `chmod +x ./bin/desploy.sh` before running the deployment command above.
+
+**📤 Stack Outputs**
+
+This section shows the final output values from the deployed CloudFormation stack.
+It includes the EC2 instance ID, VPC ID, subnet IDs, and KeyPair name — serving as proof 
+that all resources were provisioned successfully. The screenshot below provides visual 
+confirmation of the output in the terminal.
+
+![Output](./assests/stack-output.png)

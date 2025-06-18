@@ -2,7 +2,7 @@
 
 # ========== CONFIGURATION ==========
 REGION="us-west-2"
-KEY_FILE="./Net-Bootcamp-Window-server-KeyPair.pem"  # Update path if needed
+KEY_FILE="./Net-Bootcamp-Win-ubu-rhel-server-KeyPair.pem"  # Update path if needed
 
 # ========== GET LATEST RUNNING WINDOWS INSTANCE ==========
 echo "🔍 Searching for a running Windows instance..."

@@ -13,7 +13,7 @@ VPC_CIDR="10.200.123.0/24"
 PUBLIC_SUBNET_CIDR="10.200.123.0/25"
 PRIVATE_SUBNET_CIDR="10.200.123.128/25"
 AVAILABILITY_ZONE="us-west-2a"
-KEY_NAME="Net-Bootcamp-Window-server-KeyPair"
+KEY_NAME="Net-Bootcamp-Win-ubu-rhel-server-KeyPair"
 
 # ========== DEPLOYMENT ==========
 echo "🚀 Deploying CloudFormation stack: $STACK_NAME in region: $REGION"

@@ -1,113 +1,18 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "location": {
-            "value": "francecentral"
-        },
-        "networkInterfaceName1": {
-            "value": "net-fun-window-server378_z1"
-        },
-        "networkSecurityGroupName": {
-            "value": "net-fun-window-server-nsg"
-        },
-        "networkSecurityGroupRules": {
-            "value": [
-                {
-                    "name": "RDP",
-                    "properties": {
-                        "priority": 300,
-                        "protocol": "TCP",
-                        "access": "Allow",
-                        "direction": "Inbound",
-                        "sourceAddressPrefix": "*",
-                        "sourcePortRange": "*",
-                        "destinationAddressPrefix": "*",
-                        "destinationPortRange": "3389"
-                    }
-                }
-            ]
-        },
-        "subnetName": {
-            "value": "default"
-        },
-        "virtualNetworkName": {
-            "value": "net-fun-window-server-vnet"
-        },
-        "addressPrefixes": {
-            "value": [
-                "10.0.0.0/16"
-            ]
-        },
-        "subnets": {
-            "value": [
-                {
-                    "name": "default",
-                    "properties": {
-                        "addressPrefix": "10.0.0.0/24"
-                    }
-                }
-            ]
-        },
-        "publicIpAddressName1": {
-            "value": "net-fun-window-server-ip"
-        },
-        "publicIpAddressType": {
-            "value": "Static"
-        },
-        "publicIpAddressSku": {
-            "value": "Standard"
-        },
-        "pipDeleteOption": {
-            "value": "Delete"
-        },
-        "virtualMachineName": {
-            "value": "net-fun-window-server"
-        },
-        "virtualMachineName1": {
-            "value": "net-fun-window-server"
-        },
-        "virtualMachineComputerName1": {
-            "value": "net-fun-window-"
-        },
-        "virtualMachineRG": {
-            "value": "net-fun-bootcamp"
-        },
-        "osDiskType": {
-            "value": "Premium_LRS"
-        },
-        "osDiskDeleteOption": {
-            "value": "Delete"
-        },
-        "virtualMachineSize": {
-            "value": "Standard_B2s"
-        },
-        "nicDeleteOption": {
-            "value": "Delete"
-        },
-        "hibernationEnabled": {
-            "value": false
-        },
-        "adminUsername": {
-            "value": "johnisah"
-        },
-        "adminPassword": {
-            "value": null
-        },
-        "patchMode": {
-            "value": "AutomaticByPlatform"
-        },
-        "enablePeriodicAssessment": {
-            "value": "ImageDefault"
-        },
-        "enableHotpatching": {
-            "value": true
-        },
-        "rebootSetting": {
-            "value": "IfRequired"
-        },
-        "virtualMachine1Zone": {
-            "value": "1"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "value": "NetFun-Wndw-V"
+    },
+    "adminUsername": {
+      "value": "john_user"
+    },
+    "adminPassword": {
+      "value": "Testing123456!"  // ⚠️ For production use, store this securely in Azure Key Vault
+    },
+    "location": {
+      "value": "francecentral"
     }
+  }
 }

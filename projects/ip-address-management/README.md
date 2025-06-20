@@ -19,9 +19,12 @@ This project demonstrates how to provision a Windows Server 2025 virtual machine
 projects/
 ├── ip-address-management/
 │   ├── Journal.md                 # Full deployment report
-│   ├── template.json              # Original exported ARM template
-│   ├── template.bicep             # Decompiled and refactored Bicep template
-│   ├── parameters.json            # Deployment parameters (username, location, etc.)
+│   ├── README.md                     # Repository summary
+|   └── templates/
+│   |        └── vm/
+│   |            ├── template.json      # Original exported ARM template
+│   |            ├── template.bicep     # Decompiled and refactored Bicep template
+│   |            └── parameters.json    # Deployment parameters (username, location, etc.)
 │   └── assets/                    # Screenshots or supporting visual materials
 ```
 ---

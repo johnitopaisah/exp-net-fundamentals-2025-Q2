@@ -1,5 +1,3 @@
-# Journal.md
-
 ## Title: Deploying and Managing Windows Server on Azure using Azure Bicep
 
 ---

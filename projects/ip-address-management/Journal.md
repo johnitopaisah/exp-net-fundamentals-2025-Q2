@@ -152,6 +152,27 @@ Deployment completed successfully, provisioning the virtual machine and associat
 
 ![DeploymentWithBicep](./assests/deployment-complete.png)
 
+### Verify the Deployment
+
+- Opened the Azure portal.
+
+- Navigated to net-bootcamp-resource-group.
+
+- Confirmed the presence of the VM, disk, NIC, public IP, and VNet.
+
+- Downloaded the .rdp file from the portal.
+
+- Double-clicked the file on my Mac and logged in using:
+  - Username: `john_user`
+
+  - Password: `Testing123456!`
+
+- Once inside the server, opened PowerShell and ran: `ipconfig`
+
+![Running Server Deployed With Bicep](./assests/final-bicep-deployed.png)
+
+
+
 ---
 
 ## 4. Challenges with Image Availability and Region
@@ -176,60 +197,11 @@ az vm image list \
 - No Gen2-compatible x86 images in Canada East
 
 ### Decision
-Switch region to `East US` for more options.
+Switch region to `France Central` for more options.
 
 ---
 
-## 5. Parameter Adjustments
-
-Updated parameters.json:
-```json
-"imagePublisher": {
-  "value": "MicrosoftWindowsDesktop"
-},
-"imageOffer": {
-  "value": "windows11preview-arm64"
-},
-"imageSKU": {
-  "value": "win11-22h2-pro"
-},
-"location": {
-  "value": "eastus"
-}
-```
-
-> 📸 **Screenshot suggestion:** Edited parameters.json file.
-
----
-
-## 6. Deploying Bicep Template
-
-### Command
-```bash
-az deployment group create \
-  --resource-group NetFun-Bootcamp \
-  --template-file template.bicep \
-  --parameters @parameters.json
-```
-
-### Errors Encountered
-- Parameter file syntax error
-- Missing resource group
-- Invalid image SKU
-
-### Troubleshooting Actions
-- Created the resource group manually:
-```bash
-az group create --name NetFun-Bootcamp --location eastus
-```
-- Double-checked image offer/SKU using:
-```bash
-az vm image list --all --publisher MicrosoftWindowsDesktop --offer windows11 --output table
-```
-
----
-
-## 7. Lessons Learned
+## 5. Lessons Learned
 
 - **Region Limitations:** Image availability varies by region and affects compatibility with Gen1/Gen2 VMs.
 - **Preview Images:** Most Windows 11 SKUs are still in preview and may not be stable.
@@ -257,12 +229,11 @@ We ship the code for future contributors to fix or improve upon.
 ---
 
 ### Appendix
-- `template.json`: Original ARM template
-- `parameters.json`: Refactored parameters for Bicep
-- `template.bicep`: Decompiled and refactored Azure Bicep file
+- [`template.json`](./templates/vm/template.json) : Original ARM template
+- [`parameters.json`](./templates/vm/parameters.json): Refactored parameters for Bicep
+- [`template.bicep`](./templates/vm/template.bicep): Decompiled and refactored Azure Bicep file
 
 ---
 
 **Author:** Andrew Brown (w/ edits and summary by John Itopa ISAH)
 
-**Last Updated:** June 19, 2025

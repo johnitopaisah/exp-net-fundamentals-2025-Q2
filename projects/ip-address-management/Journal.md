@@ -228,7 +228,7 @@ Despite several hours of effort, full deployment using the Azure Bicep template 
 - [`template.bicep`](./templates/vm/template.bicep): Decompiled and refactored Azure Bicep file
 
 ---
----
+## 🙌 Credits
 
 **`Instructor`:** [**Andrew Brown**](https://github.com/omenking) 
 

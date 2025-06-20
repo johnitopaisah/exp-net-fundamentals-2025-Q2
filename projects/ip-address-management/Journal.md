@@ -41,7 +41,7 @@ Deploy a Windows Server 2025 VM on Azure and download its resource template for 
 
 ## 2. Connecting to the Windows Server VM from macOS
 
-Once the VM is deployed and running, follow the steps below to connect to it using RDP from a Mac:
+Once the VM is deployed and running, follow these steps below to connect to it using RDP from a Mac:
 
 ### Requirements
 For macOS system (e.g., MacBook) users like me, you be neediing `Windows App` formmally called `Microsoft Remote Desktop` from the Mac App Store
@@ -60,7 +60,7 @@ For macOS system (e.g., MacBook) users like me, you be neediing `Windows App` fo
 #### Connect to the VM:
 - Double-click the newly downloaded `.rdp` file, and you will be prompted to enter the password. Use the same password `Testingn123456!`
 
-![passwordPrompt]()
+![passwordPrompt](./assests/enter-password.png)
 - Accept the certificate warning if prompted.
 - Wait for the Windows environment to load.
 
@@ -69,7 +69,7 @@ You should be successfully connected to the Windows Server desktop.
 
 From here, you can launch **PowerShell** or **Command Prompt** and run `ipconfig` or any other IP address management tools.
 
-> 📸 **Screenshot suggestion:** Microsoft Remote Desktop showing successful connection to the Windows Server environment on macOS.
+> ![📸 Microsoft Remote Desktop Showing Successful Connection](./assests/running-window-server.png)
 
 ---
 
@@ -77,7 +77,7 @@ From here, you can launch **PowerShell** or **Command Prompt** and run `ipconfig
 
 ### Install Azure CLI & Bicep
 
-To begin, I ensured the Azure CLI was installed, then signed in and installed the Bicep CLI component:
+To begin with this, I ensured the Azure CLI was installed, then signed in and installed the Bicep CLI component:
 
 ```bash
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash

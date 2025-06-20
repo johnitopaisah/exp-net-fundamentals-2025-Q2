@@ -222,10 +222,6 @@ Despite several hours of effort, full deployment using the Azure Bicep template 
 - Manual configuration may be needed to complement IaC when preview features or regional constraints block progress.
 - Terraform may offer a more stable experience for cross-region and multi-platform deployment.
 
-We ship the code for future contributors to fix or improve upon.
-
-> 📸 **Screenshot suggestion:** Pull request summary showing final status.
-
 ---
 
 ### Appendix
@@ -234,6 +230,10 @@ We ship the code for future contributors to fix or improve upon.
 - [`template.bicep`](./templates/vm/template.bicep): Decompiled and refactored Azure Bicep file
 
 ---
+---
 
-**Author:** Andrew Brown (w/ edits and summary by John Itopa ISAH)
+**`Instructor`:** [**Andrew Brown**](https://github.com/omenking) 
+
+**`Written/Summarized`:**
+[**John Itopa ISAH**](https://github.com/johnitopaisah)
 

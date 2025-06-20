@@ -75,7 +75,7 @@ By the end of this lab, you will be able to:
 ### Topology Description
 The PC is connected to the switch via FastEthernet. The switch is linked to both the router (for external network access) and the DHCP server (to assign dynamic IPs to the PC). The router is configured manually with a static IP and acts as the default gateway for other devices in the network.
 
-![ASCII Network Diagram]()
+![ASCII Network Diagram](./assests/network-topology.png)
 
 ---
 ## 🔌 Step-by-Step Lab Guide

@@ -84,8 +84,77 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 az login --use-device-code
 ```
 
+Next, I checked Bicep availability and installed it:
+```bash
+az bicep version
+# Output: Bicep CLI not found...
 
-#### 4. Challenges with Image Availability and Region
+az bicep install
+# Output: Successfully installed Bicep CLI
+
+az bicep version
+#Output: Bicep version
+```
+
+### Decompile ARM Template to Bicep
+
+Making sure I'm at the working directory: `projects/ip-address-management/templates/vm`, I ran the command below:
+```
+az bicep decompile --file template.json
+```
+This generated a template.bicep file in the same folder.
+![](./assests/Screenshot%202025-06-19%20at%2012.33.59.png)
+
+### Review and Refactor Bicep Template
+Although the generated file was valid, I updated the hardcoded values to parameters for better reusability.
+
+I removed zone constraints and ensured the computer name was under 15 characters. Here’s a cleaned-up snippet:
+```
+param location string = 'francecentral'
+param vmName string = 'NetFun-Wndw-V'
+param adminUsername string = 'john_user'
+@secure()
+param adminPassword string
+```
+### Prepare Final Parameters File
+Here’s the updated [parameters.json:](./templates/vm/parameters.json)
+```code
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "value": "NetFun-Wndw-V"
+    },
+    "adminUsername": {
+      "value": "john_user"
+    },
+    "adminPassword": {
+      "value": "Testing123456!"  // ⚠️ For production use, store this securely in Azure Key Vault
+    },
+    "location": {
+      "value": "francecentral"
+    }
+  }
+}
+```
+### Deploy the Bicep Template
+I deployed the final template using:
+```bash
+az group create --name net-bootcamp-resource-group --location francecentral
+
+az deployment group create \
+  --resource-group net-bootcamp-resource-group \
+  --template-file template.bicep \
+  --parameters @parameters.json
+```
+Deployment completed successfully, provisioning the virtual machine and associated resources.
+
+![DeploymentWithBicep](./assests/deployment-complete.png)
+
+---
+
+## 4. Challenges with Image Availability and Region
 
 #### Issue
 While trying to redeploy using the new Bicep file, deployment failed due to unavailable image SKUs.

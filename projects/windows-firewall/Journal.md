@@ -205,6 +205,11 @@ If domain-joined, firewall rules can be managed via Group Policy Objects (GPOs) 
 - Compare rule behavior across profiles (**Domain** vs **Public**)
 
 ---
+## 7. 👤 Credits
+- **Instructor**: Special thanks to **Tim**, who guided us through the lecture and the hands-on Packet Tracer simulation with clarity and attention to detail.
 
+- **Lecture Source**: Official bootcamp session on basic networking using Cisco Packet Tracer.
+
+- **Contributors**: [`README.md`](README.md) and [`Journal.md`](Journal.md) authored and maintained by [**John Itopa ISAH**](https://github.com/johnitopaisah)
 
 
